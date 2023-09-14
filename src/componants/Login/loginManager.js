@@ -5,10 +5,12 @@ import * as firebase from 'firebase/app';
 import { } from 'firebase/analytics';
 import {FacebookAuthProvider, updateProfile, getAuth, getRedirectResult,
     createUserWithEmailAndPassword,signInWithEmailAndPassword, 
-    signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+    signInWithPopup, GoogleAuthProvider,sendEmailVerification,sendPasswordResetEmail  } from "firebase/auth";
 
 import { } from 'firebase/firestore';
 import { firebaseConfig } from './firebase.config';
+
+
 
 export const initialiseLoginFramework = () =>
 {
@@ -121,6 +123,8 @@ export const newUserSignInWithEmailAndPassword = (name,email,password) =>{
            const newUser = userCredential.user;
            updateUserName(name);
            alert("New User Created Successfully!");
+          //  sendEmailVerificationn(newUser);
+          verifyEmail();
            return newUser;
            // ...
          })
@@ -174,3 +178,42 @@ const updateUserName =name =>{
 
    });
   }
+
+const verifyEmail = ()=>{
+const auth = getAuth();
+sendEmailVerification(auth.currentUser)
+  .then(() => {
+    // Email verification sent!
+    // ...
+  });
+}
+
+// const sendEmailVerificationn = (user) => {
+//   if (user) {
+//     sendEmailVerification(user)
+//       .then(() => {
+//         // Email verification sent!
+//         // You can handle this as needed, such as displaying a message to the user.
+//       })
+//       .catch((error) => {
+//         const errorCode = error.code;
+//         const errorMessage = error.message;
+//         alert("Error sending email verification: " + errorMessage);
+//       });
+//   }
+// }
+
+ export const resetPassword = email =>{
+
+  const auth = getAuth();
+  sendPasswordResetEmail(auth, email)
+    .then(() => {
+
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      // ..
+    });
+
+}

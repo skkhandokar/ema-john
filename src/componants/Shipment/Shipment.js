@@ -49,7 +49,52 @@ const Shipment= () =>{
         />
         {errors.address && <span className='error'>Address is required</span>}  
 
-         
+    <input
+        type="text"
+        placeholder="Your City"
+        {...register("city", {
+            required: true,
+            minLength: 2,
+            maxLength: 50,
+            validate: (value) => {
+                const cityRegex = /^[a-zA-Z\s-]+$/;
+                return cityRegex.test(value);
+            },
+        })}
+    />
+    {errors.city && <span className='error'>City is required</span>}
+
+    <input
+        type="text"
+        placeholder="Your Country"
+        {...register("country", {
+            required: true,
+            minLength: 2,
+            maxLength: 50,
+            validate: (value) => {
+                const countryRegex = /^[a-zA-Z\s-]+$/;
+                return countryRegex.test(value);
+            },
+        })}
+    />
+    {errors.country && <span className='error'>Country is required</span>}
+
+    <input
+        type="text"
+        placeholder="Your Postal Code"
+        {...register("postalCode", {
+            required: true,
+            minLength: 5,
+            maxLength: 10,
+            validate: (value) => {
+                // You can define your postal code validation regex here
+            const postalCodeRegex = /^[0-9]{5}(?:-[0-9]{4})?$/;
+                return postalCodeRegex.test(value);
+            },
+        })}
+    />
+     {errors.postalCode && <span className='error'>Postal Code is required</span>}
+
 
         <input
             type="phoneNumber"

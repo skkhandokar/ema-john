@@ -3,7 +3,7 @@
 import React, {  useContext, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { userContext } from '../../App';
-import { handleFBSignIn, handleGoogleSignIn, handleSignOut, initialiseLoginFramework, newUserSignInWithEmailAndPassword , userSignInWithEmailAndPassword} from './loginManager';
+import { handleFBSignIn, handleGoogleSignIn, handleSignOut, initialiseLoginFramework, newUserSignInWithEmailAndPassword , resetPassword, userSignInWithEmailAndPassword} from './loginManager';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckSquare } from '@fortawesome/free-solid-svg-icons';
@@ -16,18 +16,24 @@ const Login = () => {
   const [loggedInUser,setLoggedInUser] =useContext(userContext);
   const [newUser, setNewUser] = useState(false);
   const [passValid, setPassValid] = useState(false);
-
+   
    const navigate  = useNavigate();
    const location= useLocation();
 
-   let {from} = location.state || {from : {pathname: '/'}};
-
+   let { from } = location.state || (newUser
+    ? { from: { pathname: '/' } }
+    : { from: { pathname: '/login' } });
+  
+   
+   console.log(loggedInUser);
+  
 
  const googleHandleSignIn  =()=>{
     handleGoogleSignIn()
     .then (res => {
       setUser(res);
      setLoggedInUser(res);
+     localStorage.setItem("loggedInUser", JSON.stringify(res));
      navigate (from, { replace: true });
     }
      )
@@ -51,7 +57,7 @@ const signOut = () => {
 
       setUser(res);
      setLoggedInUser(res);
-
+     localStorage.removeItem("loggedInUser");
     })
  }
  
@@ -124,10 +130,20 @@ const handleChange = (e) =>{
         
         }
 
- 
 
+ if (loggedInUser.isSignedIn)   {
+          return (
+            <div className="" style={{ textAlign: "center" }}>
+              <h1 style={{ marginTop: "120px" }}>Welcome, {loggedInUser.name}</h1>
+              {/* Your form and other elements for signing in or signing up */}
+            </div>
+          );
+        }
+ 
+ else {
     return (
-        <div className="" style={{textAlign:"center"}}>
+       <div className="" style={{textAlign:"center"}}>
+
         {
           user.isSignedIn ?  <button onClick={signOut}> Google Sign Out</button>:
           <button onClick={googleHandleSignIn}>Google Sign In</button>
@@ -162,10 +178,14 @@ const handleChange = (e) =>{
       />
           <br /><br />
           <input type="submit" value={newUser?"Sign Up":"Sign In"} />
+          
       </form>
- 
+      <button onClick={()=> resetPassword(user.email)}>Forgot Your Password</button>
         </div>
-    );
+    );}
+
+   
+    
 };
 
 export default Login;

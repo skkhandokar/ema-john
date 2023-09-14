@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import React, { createContext, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 import { FaYoutube } from 'react-icons/fa';
 import Header from './componants/Header/Header';
 import Shop from './componants/Shop/Shop';
@@ -22,15 +22,25 @@ export const userContext = createContext();
 const App = () => {
   const [loggedInUser, setLoggedInUser] = useState({});
 
+    useEffect(() => {
+      const loggedUserFromLocalStorage = localStorage.getItem("loggedInUser");
+
+      if (loggedUserFromLocalStorage) {
+        setLoggedInUser(JSON.parse(loggedUserFromLocalStorage));
+      } else {
+        setLoggedInUser({});
+      }
+    }, []);
+
   return (
     <userContext.Provider value={[loggedInUser, setLoggedInUser]}>
       <Router>
         <Header />
-        <h1>email: {loggedInUser.email}</h1>
+
         <Routes>
           <Route path="/shop" element={<Shop />} />
           <Route path="/review" element={<Review />} />
-          <Route path="/inventory" element={<Inventory />} />
+          <Route path="/orders" element={<Inventory />} />
           <Route
             path="/shipment"
             element={
